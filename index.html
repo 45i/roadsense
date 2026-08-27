@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
     <title>RoadSense</title>
@@ -20,19 +21,84 @@
     </div>
     <header>
             <h1>Road<b>Sense</b></h1>
-            <h4>Intelligent Traffic Risk & Priority Intelligence</h4>
+            <h4 style="font-family: console-light;">Intelligent Traffic Risk & Priority Intelligence</h4>
     </header>
     <div class="content">
         <div class="center-cont">
             <div class="banner">
-                <span style="background: none">
-                    <button class="b_ZoneSelector">NA</button>
-                <ul class="l_ZoneSelector">
+                <span style="background: none; width: 100%">
+                    <span class="dropdown-anchor">
+                        <button class="b_generic b_ZoneSelectorMaster">NA</button>
+                        <ul class="l_ZoneSelector l_generic"></ul>
+                    </span>
+                <b id="l_ZoneDetails">(<span class="l_ZoneDetails">NA</span>)</b>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span>
+                    <b id="l_WeekDetails">Week <span class="dropdown-anchor dropdown-anchor-inline"><button class="b_generic b_WeekSelectorMaster">-1</button><ul class="l_WeekSelector l_generic"></ul></span> of <span class="l_WeekCount">NA</span></b>
+                </span>
+            </span>
+        </div>
+            <div class="banner summary-banner" style="margin: 16px 0; padding: 6px;">
+                <div class="summary-banner-row">
+                    <h1 class="l_banner_title" style="margin :0 16px;">
+                        NA
+                    </h1>
+                    <span class="l_data_disp_additional_severity l_additional_data" style="margin :0 16px; padding: 0 2px;">HIGH</span>
+                </div>
+                <div class="l_data_disp_additional_descriptor" style="margin :0 16px; padding: 0 2px; font-family: console-light; color: #ffffff35">NA</div>
+            </div>
+            <div class="data_disp">
+                <span class="horizontal_stacker">
+                    <span style="width: 35%">
+                    <ul class="l_generic_nodrop l_data_disp active">
+                        <li class="l_data_disp_item_population l_data_disp_item">
+                            <span class="l_data_disp_item_population_title l_data_disp_item_header">Population Density</span>
+                            <span class="l_data_disp_item_population_value l_ZoneDetails l_data_disp_item_value">NA</span>
+
+                        </li>
+                        <li class="l_data_disp_item_predicted_risk l_data_disp_item">
+                            <span class="l_data_disp_item_predicted_risk_title l_data_disp_item_header">Predicted Risk  <span class="l_data_disp_additional_predicted_risk l_additional_data">HIGH</span></span>
+                            <span class="l_data_disp_item_predicted_risk_value l_ZoneDetails l_data_disp_item_value">NA</span>
+                        </li>
+                        
                 </ul>
                 </span>
-                <b id="l_ZoneDetails">(<span class="l_ZoneDetails">NA</span>)</b>
-                <b id="l_ZoneDetails">(<span class="l_ZoneDetails">NA</span>)</b>
-                </div>
+                    <span style="width: 35%">
+                    <ul class="l_generic_nodrop l_data_disp active">
+                        <li class="l_data_disp_item_incident l_data_disp_item " >
+                            <span class="l_data_disp_item_incident_title l_data_disp_item_header">Incidents</span>
+                            <span class="l_data_disp_item_incident_value l_ZoneDetails l_data_disp_item_value">NA</span>
+
+                        </li>
+                        <li class="l_data_disp_item_congestion l_data_disp_item" >
+                            <span class="l_data_disp_item_congestion_title l_data_disp_item_header">Congestion Index</span>
+                            <span class="l_data_disp_item_congestion_value l_ZoneDetails l_data_disp_item_value">NA</span>
+
+                        </li>
+                </ul>
+                </span>
+                    
+                    <span style="width: 35%">
+                    <ul class="l_generic_nodrop l_data_disp active">
+                        <li class="l_data_disp_item_traffic_prssure l_data_disp_item">
+                            <span class="l_data_disp_item_traffic_prssure_title l_data_disp_item_header">Traffic Pressure</span>
+                            <span class="l_data_disp_item_traffic_prssure_value l_ZoneDetails l_data_disp_item_value">NA</span>
+
+                        </li>
+                        <li class="l_data_disp_item_vehicle_density l_data_disp_item" >
+                            <span class="l_data_disp_item_vehicle_density_title l_data_disp_item_header">Vehicle Density</span>
+                            <span class="l_data_disp_item_vehicle_density_value l_ZoneDetails l_data_disp_item_value">NA</span>
+
+                        </li>
+                </ul>
+                </span>
+                </span>
+            </div>  
         </div>
         
     </div>
