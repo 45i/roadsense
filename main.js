@@ -2,11 +2,16 @@ zone="";
 week=1;
 first_run=true;
 let timelineData=[];
+let timelineHoverIndex=-1;
+let availableZones=[];
+let riskMap=null;
+let riskLayer=null;
 
 document.addEventListener('DOMContentLoaded', () => {
 fetch('https://ayan786151.github.io/RoadSense-AI/api/v1/zones.json')
   .then(response => response.json())
   .then(data => {
+        availableZones=data.zones;
     //   console.log(data.zones[0].zone_id);
       document.querySelector('.b_ZoneSelectorMaster').innerHTML = data.zones[0].zone_id.replace(/_/g, ' ');
       zone=data.zones[0].zone_id.replace(/_/g,' ');
@@ -83,10 +88,13 @@ function RefreshStack(firstrun = false) {
         document.querySelector('.l_WeekCount').innerHTML = data.timeline.length;
         timelineData=data.timeline;
         drawTimeline();
+        loadRanking();
+        renderRiskMap(data.timeline);
     });
     fetch(`https://ayan786151.github.io/RoadSense-AI/api/v1/zones/${zone.replace(/ /g,'_')}/${week}.json`)
     .then(response => response.json())
     .then(data => {
+        updateCivilianSummary(data);
         document.querySelector('.l_data_disp_item_population_value').innerHTML = data.raw_metrics.population_density;
         document.querySelector('.l_data_disp_item_incident_value').innerHTML = data.raw_metrics.incident_count;
         // if (data.raw_metrics.incident_count_change > 0) {
@@ -117,6 +125,117 @@ function RefreshStack(firstrun = false) {
         Initialise();
 
     }
+}
+
+function loadRanking() {
+    if (!availableZones.length) return;
+    const rankingBody=document.querySelector('#ranking-body');
+    rankingBody.innerHTML='<tr><td colspan="7">Loading ranking data...</td></tr>';
+    Promise.all(availableZones.map(zoneInfo => {
+        const zoneId=zoneInfo.zone_id;
+        return fetch(`https://ayan786151.github.io/RoadSense-AI/api/v1/zones/${zoneId}/${week}.json`)
+            .then(response => response.ok ? response.json() : null)
+            .catch(() => null);
+    })).then(records => {
+        const ranking=records.filter(Boolean).sort((first, second) => Number(second.priority?.priority_score ?? second.raw_metrics?.priority_score ?? 0) - Number(first.priority?.priority_score ?? first.raw_metrics?.priority_score ?? 0));
+        rankingBody.replaceChildren();
+        ranking.forEach((record, index) => {
+            const metrics=record.raw_metrics || {};
+            const row=document.createElement('tr');
+            if (record.zone_id?.replace(/_/g, ' ') === zone) {
+                row.classList.add('current-zone');
+                row.setAttribute('aria-current', 'true');
+            }
+            row.innerHTML=`<td>${index+1}</td><td>${record.zone_id || 'NA'}</td><td>${record.location_name || metrics.location_name || 'NA'}</td><td>${record.city || metrics.city || 'NA'}</td><td>${formatNumber(metrics.vehicle_density)}</td><td>${formatNumber(metrics.congestion)}</td><td>${metrics.incident_occurred ?? 'NA'}</td>`;
+            rankingBody.appendChild(row);
+        });
+        document.querySelector('#ranking-title').textContent=`Municipal 50-Zone Ranking - Week ${week}`;
+        renderRiskMap(ranking);
+    });
+}
+
+function formatNumber(value) {
+    return value == null || Number.isNaN(Number(value)) ? 'NA' : Number(value).toFixed(2);
+}
+
+function updateCivilianSummary(data) {
+    const metrics=data.raw_metrics || {};
+    const risk=data.risk_analysis || {};
+    const intervention=data.interventions?.[0] || {};
+    const riskValue=risk.predicted_risk_percentage == null ? 'NA' : `${Number(risk.predicted_risk_percentage).toFixed(0)}%`;
+    const riskLabel=risk.risk_label || 'Risk unavailable';
+    const incidents=metrics.incident_count == null ? 'NA' : metrics.incident_count;
+    const congestion=metrics.congestion == null ? 'NA' : `${Number(metrics.congestion).toFixed(0)}% congestion`;
+    const speed=metrics.average_speed == null ? 'NA' : `${Number(metrics.average_speed).toFixed(0)} km/h average speed`;
+    const roadLoad=metrics.traffic_pressure == null ? 'NA' : `${(Number(metrics.traffic_pressure)*100).toFixed(0)}%`;
+    const density=metrics.vehicle_density == null ? 'NA' : `${Number(metrics.vehicle_density).toFixed(1)} veh/km`;
+    const capacity=metrics.effective_road_capacity == null ? metrics.road_capacity : metrics.effective_road_capacity;
+    const weather=metrics.weather || 'Weather unavailable';
+    const roadCondition=metrics.road_condition || 'Road condition unavailable';
+    const riskText=risk.predicted_risk_percentage == null ? 'No risk estimate is available for this week.' : `${riskLabel}. This is the forecast for the selected zone and week.`;
+    const incidentText=metrics.incident_occurred ? 'At least one incident was recorded this week.' : 'No incident was recorded this week.';
+    const guidance=[intervention.description, intervention.action].filter(Boolean).join(' ');
+
+    document.querySelector('#civilian-summary-period').textContent=`${metrics.location_name || data.location_name || zone} - Week ${metrics.week || data.week || week}`;
+    document.querySelector('#summary-risk').textContent=`${riskLabel} (${riskValue})`;
+    document.querySelector('#summary-risk-text').textContent=riskText;
+    document.querySelector('#summary-traffic').textContent=congestion;
+    document.querySelector('#summary-traffic-text').textContent=speed;
+    document.querySelector('#summary-incidents').textContent=incidents;
+    document.querySelector('#summary-incidents-text').textContent=incidentText;
+    document.querySelector('#summary-conditions').textContent=weather;
+    document.querySelector('#summary-conditions-text').textContent=roadCondition;
+    document.querySelector('#summary-speed').textContent=metrics.average_speed == null ? 'NA' : `${Number(metrics.average_speed).toFixed(1)} km/h`;
+    document.querySelector('#summary-speed-text').textContent=metrics.speed_change == null ? 'Typical speed in this zone' : `${Number(metrics.speed_change) >= 0 ? '+' : ''}${Number(metrics.speed_change).toFixed(1)} km/h versus the previous week`;
+    document.querySelector('#summary-road-load').textContent=roadLoad;
+    document.querySelector('#summary-road-load-text').textContent=metrics.traffic_pressure == null ? 'Road load unavailable' : 'Estimated share of road capacity in use';
+    document.querySelector('#summary-density').textContent=density;
+    document.querySelector('#summary-density-text').textContent=metrics.vehicle_density_pct_change == null ? 'Vehicles per kilometre' : `${Number(metrics.vehicle_density_pct_change) >= 0 ? '+' : ''}${Number(metrics.vehicle_density_pct_change).toFixed(1)}% versus the previous week`;
+    document.querySelector('#summary-capacity').textContent=capacity == null ? 'NA' : `${Number(capacity).toFixed(1)} lanes`;
+    document.querySelector('#summary-capacity-text').textContent='Effective available road capacity';
+    document.querySelector('#summary-guidance-text').textContent=guidance || 'No specific guidance is available for this week.';
+}
+
+function renderRiskMap(records) {
+    const mapElement=document.querySelector('#risk-map');
+    if (!mapElement || !window.L || !availableZones.length) return;
+    if (!riskMap) {
+        riskMap=L.map(mapElement, {worldCopyJump:true, minZoom:2, maxZoom:13}).setView([20, 0], 2);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom:19,
+            attribution:'&copy; OpenStreetMap contributors'
+        }).addTo(riskMap);
+        riskLayer=L.layerGroup().addTo(riskMap);
+    }
+    riskLayer.clearLayers();
+    const points=[];
+    const recordsByZone=new Map(records.filter(Boolean).map(record => [record.zone_id, record]));
+    availableZones.forEach(zoneInfo => {
+        const latitude=Number(zoneInfo.latitude);
+        const longitude=Number(zoneInfo.longitude);
+        if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
+        const record=recordsByZone.get(zoneInfo.zone_id);
+        const congestion=Number(record?.raw_metrics?.congestion ?? 0);
+        const color=heatColor(congestion);
+        const marker=L.circleMarker([latitude, longitude], {
+            radius:Math.max(6, Math.min(16, 6+congestion/10)),
+            color,
+            fillColor:color,
+            fillOpacity:0.72,
+            weight:2
+        });
+        marker.bindPopup(`<div class="risk-popup"><strong>${zoneInfo.location_name} (${zoneInfo.zone_id})</strong><br>Congestion: ${formatNumber(congestion)}<br>Vehicle density: ${formatNumber(record?.raw_metrics?.vehicle_density)}<br>Incident occurred: ${record?.raw_metrics?.incident_occurred ?? 'NA'}<br>Coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}</div>`);
+        marker.addTo(riskLayer);
+        points.push([latitude, longitude]);
+    });
+    document.querySelector('#map-title').textContent=`Geospatial Risk Radar - Week ${week}`;
+    if (points.length) riskMap.fitBounds(points, {padding:[24, 24], maxZoom:9});
+    setTimeout(() => riskMap.invalidateSize(), 0);
+}
+
+function heatColor(value) {
+    const hue=270-(Math.max(0, Math.min(100, value))*270/100);
+    return `hsl(${hue}, 85%, 52%)`;
 }
 
 function drawTimeline() {
@@ -199,5 +318,33 @@ function drawTimeline() {
     });
 }
 
+function setupTimelineHover() {
+    const canvas=document.querySelector('#timeline-chart');
+    const tooltip=document.querySelector('#timeline-tooltip');
+    if (!canvas || !tooltip) return;
+
+    canvas.addEventListener('mousemove', event => {
+        if (!timelineData.length) return;
+        const bounds=canvas.getBoundingClientRect();
+        const padding={left:46, right:18};
+        const chartWidth=Math.max(1, bounds.width-padding.left-padding.right);
+        const position=Math.max(0, Math.min(chartWidth, event.clientX-bounds.left-padding.left));
+        const index=timelineData.length === 1 ? 0 : Math.round(position/chartWidth*(timelineData.length-1));
+        const item=timelineData[index];
+        timelineHoverIndex=index;
+        tooltip.innerHTML=`<strong>Week ${item.week}</strong><span class="tooltip-congestion">Congestion: ${Number(item.raw_metrics?.congestion ?? 0).toFixed(1)}</span><span class="tooltip-speed">Average speed: ${Number(item.raw_metrics?.average_speed ?? 0).toFixed(1)} km/h</span><span class="tooltip-risk">Incident risk: ${Number(item.risk_analysis?.predicted_risk_percentage ?? 0).toFixed(1)}%</span>`;
+        tooltip.style.left=`${padding.left + index*chartWidth/(Math.max(1, timelineData.length-1))}px`;
+        tooltip.style.top=`${Math.max(58, event.clientY-bounds.top)}px`;
+        tooltip.classList.add('visible');
+        drawTimeline();
+    });
+    canvas.addEventListener('mouseleave', () => {
+        timelineHoverIndex=-1;
+        tooltip.classList.remove('visible');
+        drawTimeline();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', setupTimelineHover);
 window.addEventListener('resize', drawTimeline);
 
