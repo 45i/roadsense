@@ -1,13 +1,13 @@
 @font-face{
-    src: url("/assets/fonts/SFPRODISPLAYREGULAR.OTF");
+    src: url("assets/fonts/SFPRODISPLAYREGULAR.OTF");
     font-family: st;
 }
 @font-face{
-    src: url("/assets/fonts/JetBrainsMonoNL-Light.ttf");
+    src: url("assets/fonts/JetBrainsMonoNL-Light.ttf");
     font-family: console-light;
 }
 @font-face{
-    src: url("/assets/fonts/JetBrainsMono-Bold.ttf");
+    src: url("assets/fonts/JetBrainsMono-Bold.ttf");
     font-family: console-bold;
 }
 *, body{
