@@ -98,6 +98,19 @@
                 </ul>
                 </span>
                 </span>
+                <section class="timeline-panel" aria-labelledby="timeline-title">
+                    <div class="timeline-header">
+                        <h2 id="timeline-title">52-Week Historical Trajectory</h2>
+                        <div class="timeline-legend" aria-label="Chart legend">
+                            <span><i class="legend-line congestion-line"></i>Congestion Index (0-100)</span>
+                            <span><i class="legend-line speed-line"></i>Average Speed (km/h)</span>
+                            <span><i class="legend-line risk-line"></i>Predicted Incident Risk (%)</span>
+                        </div>
+                    </div>
+                    <div class="timeline-chart-wrap">
+                        <canvas id="timeline-chart" aria-label="Historical congestion, average speed, and predicted incident risk"></canvas>
+                    </div>
+                </section>
             </div>  
         </div>
         
