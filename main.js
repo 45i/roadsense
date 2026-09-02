@@ -6,14 +6,44 @@ let timelineHoverIndex=-1;
 let availableZones=[];
 let riskMap=null;
 let riskLayer=null;
+let safetyContext='general';
+let currentZoneRecord=null;
+
+function getCurrentWeekFromDevice(date = new Date()) {
+    const isoDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNumber = isoDate.getUTCDay() || 7;
+    isoDate.setUTCDate(isoDate.getUTCDate() + 4 - dayNumber);
+    const yearStart = new Date(Date.UTC(isoDate.getUTCFullYear(), 0, 1));
+    const weekNumber = Math.ceil((((isoDate - yearStart) / 86400000) + 1) / 7);
+    return Math.min(Math.max(weekNumber, 1), 52);
+}
+
+function setupSafetyContextSelector() {
+    const button=document.querySelector('.b_SafetyContextSelector');
+    const list=document.querySelector('.l_SafetyContextSelector');
+    if (!button || !list) return;
+
+    button.onclick = () => list.classList.toggle('active');
+    list.querySelectorAll('button[data-safety-context]').forEach(option => {
+        option.onclick = () => {
+            safetyContext = option.dataset.safetyContext;
+            button.innerHTML = option.textContent.trim();
+            list.classList.remove('active');
+            if (currentZoneRecord) {
+                updateSafetyContext(currentZoneRecord);
+            }
+        };
+    });
+}
 
 document.addEventListener('DOMContentLoaded', () => {
+setupSafetyContextSelector();
 fetch('https://ayan786151.github.io/RoadSense-AI/api/v1/zones.json')
   .then(response => response.json())
   .then(data => {
         availableZones=data.zones;
     //   console.log(data.zones[0].zone_id);
-      document.querySelector('.b_ZoneSelectorMaster').innerHTML = data.zones[0].zone_id.replace(/_/g, ' ');
+      document.querySelector('.b_ZoneSelectorMaster').innerHTML = data.zones[0].location_name.replace(/_/g, ' ');
       zone=data.zones[0].zone_id.replace(/_/g,' ');
 
       document.querySelector('.b_ZoneSelectorMaster').onclick = () => {
@@ -24,9 +54,9 @@ fetch('https://ayan786151.github.io/RoadSense-AI/api/v1/zones.json')
         const listItem = document.createElement('li');
         const button = document.createElement('button');
         button.className = 'b_ZoneSelector b_generic';
-        button.innerHTML = element.zone_id.replace(/_/g, ' ');
+        button.innerHTML = element.location_name.replace(/_/g, ' ');
         button.onclick = () => {
-            document.querySelector('.b_ZoneSelectorMaster').innerHTML = element.zone_id.replace(/_/g, ' ');
+            document.querySelector('.b_ZoneSelectorMaster').innerHTML = element.location_name.replace(/_/g, ' ');
             document.querySelector('.l_ZoneSelector').classList.toggle('active');
 
             zone=element.zone_id.replace(/_/g,' ');
@@ -40,49 +70,45 @@ fetch('https://ayan786151.github.io/RoadSense-AI/api/v1/zones.json')
     if (zone!=""){
         document.querySelector('.data_disp').classList.add('active');
     }
+    Initialise();
     RefreshStack(first_run);
   });
-//   Initialise();
 
 });
 function Initialise(){
-  fetch(`https://ayan786151.github.io/RoadSense-AI/api/v1/zones/${document.querySelector('.b_ZoneSelectorMaster').innerHTML.replace(' ','_')}/all.json`)
-    .then(response => response.json())
-    .then(data => {
-        week=data.timeline[0].week;
-        timelineData=data.timeline;
-        drawTimeline();
-        document.querySelector(".b_WeekSelectorMaster").innerHTML = data.timeline[0].week;
-        document.querySelector('.b_WeekSelectorMaster').onclick = () => {
-            document.querySelector('.l_WeekSelector').classList.toggle('active');
+    week = getCurrentWeekFromDevice();
+    const weekButton = document.querySelector('.b_WeekSelectorMaster');
+    if (weekButton) {
+        weekButton.innerHTML = week;
+        weekButton.onclick = null;
+        weekButton.disabled = true;
+    }
+    const weekList = document.querySelector('.l_WeekSelector');
+    if (weekList) {
+        weekList.replaceChildren();
+        weekList.classList.remove('active');
+    }
+    // Display current date used for week calculation
+    const currentDate = new Date();
+    const dateString = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    const dateElements = document.querySelectorAll('.l_ZoneDetails');
+    dateElements.forEach(el => {
+        if (el.textContent !== 'NA') {
+            el.title = `Week calculated from: ${dateString}`;
         }
-        document.querySelector('.l_WeekSelector').replaceChildren();
-        
-        data.timeline.forEach(element => {
-            const listItem = document.createElement('li');
-            const button = document.createElement('button');
-            button.className = 'b_WeekSelector b_generic';
-            button.innerHTML = element.week;
-            button.onclick = () => {
-                document.querySelector('.b_WeekSelectorMaster').innerHTML = element.week;
-                document.querySelector('.l_WeekSelector').classList.toggle('active');   
-                week=element.week;
-                RefreshStack();
-            }
-            listItem.appendChild(button);
-            document.querySelector('.l_WeekSelector').appendChild(listItem);
-        });
-
     });
 }
 
 function RefreshStack(firstrun = false) {
-    fetch(`https://ayan786151.github.io/RoadSense-AI/api/v1/zones/${document.querySelector('.b_ZoneSelectorMaster').innerHTML.replace(' ','_')}/1.json`)
+    const currentDate = new Date();
+    const dateString = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    
+    fetch(`https://ayan786151.github.io/RoadSense-AI/api/v1/zones/${zone.replace(' ','_')}/1.json`)
   .then(response => response.json())
     .then(data => {
-        document.querySelector('.l_ZoneDetails').innerHTML = `${data.raw_metrics.location_name}, ${data.raw_metrics.city} - ${data.raw_metrics.zone_type.replace(/_/g, ' ')}`;
+        document.querySelector('.l_ZoneDetails').innerHTML = `${dateString}`;
     });
-    fetch(`https://ayan786151.github.io/RoadSense-AI/api/v1/zones/${document.querySelector('.b_ZoneSelectorMaster').innerHTML.replace(' ','_')}/all.json`)
+    fetch(`https://ayan786151.github.io/RoadSense-AI/api/v1/zones/${zone.replace(' ','_')}/all.json`)
     .then(response => response.json())
     .then(data => {
         document.querySelector('.l_WeekCount').innerHTML = data.timeline.length;
@@ -94,9 +120,10 @@ function RefreshStack(firstrun = false) {
     fetch(`https://ayan786151.github.io/RoadSense-AI/api/v1/zones/${zone.replace(/ /g,'_')}/${week}.json`)
     .then(response => response.json())
     .then(data => {
+        currentZoneRecord = data;
         updateCivilianSummary(data);
-        document.querySelector('.l_data_disp_item_population_value').innerHTML = data.raw_metrics.population_density;
-        document.querySelector('.l_data_disp_item_incident_value').innerHTML = data.raw_metrics.incident_count;
+        updateSafetyContext(data);
+        document.querySelector('.l_data_disp_item_risk_window_value').innerHTML = `${data.civilian_road_safety_radar.civilian_safety_guide.peak_danger_windows.primary_peak} <span style="font-family: console-light; font-size: small; color: #ffffff24">${data.civilian_road_safety_radar.civilian_safety_guide.peak_danger_windows.secondary_peak}</span>`;
         // if (data.raw_metrics.incident_count_change > 0) {
         //     document.querySelector('.l_data_disp_item_incident').classList.add('negative');
         // } else if (data.raw_metrics.incident_count_change < 0) {
@@ -106,15 +133,15 @@ function RefreshStack(firstrun = false) {
         //     document.querySelector('.l_data_disp_item_incident').classList.remove('positive');
         //     document.querySelector('.l_data_disp_item_incident').classList.remove('negative');
         // }
-        document.querySelector('.l_data_disp_item_traffic_prssure_value').innerHTML = Number(data.raw_metrics.traffic_pressure*100).toFixed(1) + "%";
+        document.querySelector('.l_data_disp_item_weather_value').innerHTML = data.civilian_road_safety_radar.current_week.dominant_weather;
         document.querySelector('.l_data_disp_item_predicted_risk_value').innerHTML = `${(data.risk_analysis.predicted_risk_percentage!=null)? `${Number(data.risk_analysis.predicted_risk_percentage).toFixed(1)}% <span style="font-family: console-light; white-space: nowrap;font-size: small; color: #ffffff24">${data.risk_analysis.risk_delta_vs_prev_week !=null? `(${data.risk_analysis.risk_delta_vs_prev_week > 0 ? '+' : ''}${Number(data.risk_analysis.risk_delta_vs_prev_week).toFixed(1)}% vs W${week-1}) `:""}`: 'NA'}</span>`;
         document.querySelector('.l_data_disp_additional_predicted_risk').innerHTML = data.risk_analysis.risk_label;
         document.querySelector('.l_data_disp_additional_predicted_risk').style.background = data.risk_analysis.risk_color;
-        document.querySelector('.l_banner_title').innerHTML = data.interventions[0].id.replace(/_/g, ' ');
-        document.querySelector('.l_data_disp_additional_severity').innerHTML = data.interventions[0].severity;
-        document.querySelector('.l_data_disp_additional_descriptor').innerHTML = data.interventions[0].description + " " +data.interventions[0].action;
-        document.querySelector('.l_data_disp_item_congestion_value').innerHTML = data.raw_metrics.congestion + `% <span style="font-family: console-light; white-space: nowrap;font-size: small; color: #ffffff24">${data.raw_metrics.congestion_change !=null? `(${data.raw_metrics.congestion_change > 0 ? '+' : ''}${Number(data.raw_metrics.congestion_change).toFixed(1)}% vs W${week-1}) `:""}</span>`; 
-        document.querySelector('.l_data_disp_item_vehicle_density_value').innerHTML = data.raw_metrics.vehicle_density + ` veh/km <span style="font-family: console-light; white-space: nowrap;font-size: small; color: #ffffff24">${data.raw_metrics.vehicle_density_pct_change !=null? `(${data.raw_metrics.vehicle_density_pct_change > 0 ? '+' : ''}${Number(data.raw_metrics.vehicle_density_pct_change).toFixed(1)}% vs W${week-1}) `:""}</span>`; 
+        // document.querySelector('.l_banner_title').innerHTML = data.interventions[0].id.replace(/_/g, ' ');
+        // document.querySelector('.l_data_disp_additional_severity').innerHTML = data.interventions[0].severity;
+        // document.querySelector('.l_data_disp_additional_descriptor').innerHTML = data.interventions[0].description + " " +data.interventions[0].action;
+        // document.querySelector('.l_data_disp_item_congestion_value').innerHTML = data.raw_metrics.congestion + `% <span style="font-family: console-light; white-space: nowrap;font-size: small; color: #ffffff24">${data.raw_metrics.congestion_change !=null? `(${data.raw_metrics.congestion_change > 0 ? '+' : ''}${Number(data.raw_metrics.congestion_change).toFixed(1)}% vs W${week-1}) `:""}</span>`; 
+        document.querySelector('.l_data_disp_item_street_env_value').innerHTML = data.civilian_road_safety_radar.why_accidents_might_happen.street_environment.title + `<br> <span style="font-family: console-light; font-size: small; color: #ffffff24">${data.civilian_road_safety_radar.why_accidents_might_happen.street_environment.explanation}</span>`; 
 
         // document.querySelector('.l_data_disp_additional_predicted_risk').style.display= (data.risk_analysis.risk_label != null)?"block": "none";
     });
@@ -146,7 +173,7 @@ function loadRanking() {
                 row.classList.add('current-zone');
                 row.setAttribute('aria-current', 'true');
             }
-            row.innerHTML=`<td>${index+1}</td><td>${record.zone_id || 'NA'}</td><td>${record.location_name || metrics.location_name || 'NA'}</td><td>${record.city || metrics.city || 'NA'}</td><td>${formatNumber(metrics.vehicle_density)}</td><td>${formatNumber(metrics.congestion)}</td><td>${metrics.incident_occurred ?? 'NA'}</td>`;
+            row.innerHTML=`<td>${index+1}</td><td>${record.zone_id || 'NA'}</td><td>${record.location_name || metrics.location_name || 'NA'}</td><td>${record.city || metrics.city || 'NA'}</td><td>${(record.raw_metrics?.chicago_beat ?? 'NA')}</td><td>${formatNumber(record.risk_analysis?.predicted_risk_percentage)}%</td><td>${record.priority?.priority_level ?? 'NA'}</td>`;
             rankingBody.appendChild(row);
         });
         document.querySelector('#ranking-title').textContent=`Municipal 50-Zone Ranking - Week ${week}`;
@@ -156,6 +183,37 @@ function loadRanking() {
 
 function formatNumber(value) {
     return value == null || Number.isNaN(Number(value)) ? 'NA' : Number(value).toFixed(2);
+}
+
+function updateSafetyContext(data) {
+    const radar = data?.civilian_road_safety_radar || {};
+    const primaryCause = radar.why_accidents_might_happen?.primary_collision_cause || {};
+    const safetyGuide = radar.civilian_safety_guide || {};
+    const label = document.querySelector('.safety-context-label');
+    const target = document.querySelector('.l_data_disp_item_prim_cause_value');
+    if (!label || !target) return;
+
+    const contextConfig = {
+        general: {
+            title: 'Primary Risk Cause',
+            value: `${primaryCause.title || 'Cause unavailable'} <span style="font-family: console-light; font-size: small; color: #ffffff24">${primaryCause.historical_frequency_pct == null ? '' : `${Number(primaryCause.historical_frequency_pct).toFixed(1)}%`}</span>`,
+            details: primaryCause.explanation || 'No primary collision cause has been reported for this zone.'
+        },
+        drivers: {
+            title: 'Driver Guidance',
+            value: `${safetyGuide.for_drivers?.action || 'Driver guidance unavailable'} <span style="font-family: console-light; font-size: small; color: #ffffff24">${safetyGuide.for_drivers?.key_tip ? `• ${safetyGuide.for_drivers.key_tip}` : ''}</span>`,
+            details: safetyGuide.for_drivers?.details || 'No driver guidance is available for this zone.'
+        },
+        pedestrians: {
+            title: 'Pedestrian Guidance',
+            value: `${safetyGuide.for_pedestrians_and_cyclists?.action || 'Pedestrian guidance unavailable'} <span style="font-family: console-light; font-size: small; color: #ffffff24">${safetyGuide.for_pedestrians_and_cyclists?.key_tip ? `• ${safetyGuide.for_pedestrians_and_cyclists.key_tip}` : ''}</span>`,
+            details: safetyGuide.for_pedestrians_and_cyclists?.details || 'No pedestrian guidance is available for this zone.'
+        }
+    };
+
+    const selected = contextConfig[safetyContext] || contextConfig.general;
+    label.textContent = selected.title;
+    target.innerHTML = `${selected.value}<br><span style="font-family: console-light; color: #ffffff7a; display: block; margin-top: 6px;">${selected.details}</span>`;
 }
 
 function updateCivilianSummary(data) {
@@ -215,16 +273,18 @@ function renderRiskMap(records) {
         const longitude=Number(zoneInfo.longitude);
         if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
         const record=recordsByZone.get(zoneInfo.zone_id);
-        const congestion=Number(record?.raw_metrics?.congestion ?? 0);
-        const color=heatColor(congestion);
+        const riskValue=Number(record?.risk_analysis?.predicted_risk_percentage ?? 0);
+        const normalizedRisk = Number.isFinite(riskValue) ? Math.max(0, Math.min(100, riskValue)) : 0;
+        const riskDisplay = Number.isFinite(riskValue) ? `${riskValue.toFixed(1)}%` : 'NA';
+        const color=heatColor(normalizedRisk);
         const marker=L.circleMarker([latitude, longitude], {
-            radius:Math.max(6, Math.min(16, 6+congestion/10)),
+            radius:Math.max(7, Math.min(18, 7 + normalizedRisk/5)),
             color,
             fillColor:color,
-            fillOpacity:0.72,
-            weight:2
+            fillOpacity:0.8,
+            weight:2.5
         });
-        marker.bindPopup(`<div class="risk-popup"><strong>${zoneInfo.location_name} (${zoneInfo.zone_id})</strong><br>Congestion: ${formatNumber(congestion)}<br>Vehicle density: ${formatNumber(record?.raw_metrics?.vehicle_density)}<br>Incident occurred: ${record?.raw_metrics?.incident_occurred ?? 'NA'}<br>Coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}</div>`);
+        marker.bindPopup(`<div class="risk-popup"><strong>${zoneInfo.location_name} (${zoneInfo.zone_id})</strong><br>Risk level: ${riskDisplay}<br>Risk label: ${record?.risk_analysis?.risk_label || 'NA'}<br>Priority: ${record?.priority?.priority_level || 'NA'}<br>Coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}</div>`);
         marker.addTo(riskLayer);
         points.push([latitude, longitude]);
     });
@@ -234,8 +294,14 @@ function renderRiskMap(records) {
 }
 
 function heatColor(value) {
-    const hue=270-(Math.max(0, Math.min(100, value))*270/100);
-    return `hsl(${hue}, 85%, 52%)`;
+    const safeValue=Math.max(0, Math.min(100, Number(value) || 0));
+    const normalized = safeValue / 100;
+
+    const hue = 120 - (normalized * 120);
+    const saturation = 85 + (normalized * 10);
+    const lightness = 58 - (normalized * 18);
+
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
 
 function drawTimeline() {
@@ -257,8 +323,8 @@ function drawTimeline() {
     const xFor=index => padding.left + (timelineData.length === 1 ? chartWidth/2 : index*chartWidth/(timelineData.length-1));
     const yFor=value => padding.top + chartHeight - Math.max(0, Math.min(100, Number(value) || 0))*chartHeight/100;
     const series=[
-        {color:'#f1f1f1', values:item => item.raw_metrics?.congestion, dashed:false},
-        {color:'#85858d', values:item => item.raw_metrics?.average_speed, dashed:true},
+        // {color:'#f1f1f1', values:item => item.civilian_road_safety_radar?.current_week?.crashes_rolling4w_avg, dashed:false},
+        // {color:'#85858d', values:item => item.raw_metrics?.average_speed, dashed:true},
         {color:'#f04444', values:item => item.risk_analysis?.predicted_risk_percentage, dashed:false}
     ];
 
@@ -332,7 +398,7 @@ function setupTimelineHover() {
         const index=timelineData.length === 1 ? 0 : Math.round(position/chartWidth*(timelineData.length-1));
         const item=timelineData[index];
         timelineHoverIndex=index;
-        tooltip.innerHTML=`<strong>Week ${item.week}</strong><span class="tooltip-congestion">Congestion: ${Number(item.raw_metrics?.congestion ?? 0).toFixed(1)}</span><span class="tooltip-speed">Average speed: ${Number(item.raw_metrics?.average_speed ?? 0).toFixed(1)} km/h</span><span class="tooltip-risk">Incident risk: ${Number(item.risk_analysis?.predicted_risk_percentage ?? 0).toFixed(1)}%</span>`;
+        tooltip.innerHTML=`<strong>Week ${item.week}</strong><span class="tooltip-congestion">Crashes (4W Avg): ${Number(item.civilian_road_safety_radar?.current_week?.crashes_rolling4w_avg ?? 0).toFixed(1)}</span><span class="tooltip-speed">Average speed: ${Number(item.raw_metrics?.average_speed ?? 0).toFixed(1)} km/h</span><span class="tooltip-risk">Incident risk: ${Number(item.risk_analysis?.predicted_risk_percentage ?? 0).toFixed(1)}%</span>`;
         tooltip.style.left=`${padding.left + index*chartWidth/(Math.max(1, timelineData.length-1))}px`;
         tooltip.style.top=`${Math.max(58, event.clientY-bounds.top)}px`;
         tooltip.classList.add('visible');

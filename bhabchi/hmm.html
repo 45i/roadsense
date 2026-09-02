@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>RoadSense</title>
+    <link rel="stylesheet" href="main.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="main.js"></script>
+    </head>
+
+<body id="top">
+    <div class="nav-cont">
+        <navbar class="navig">
+        <a href="#top" class="logo" aria-label="Return to top of page">
+            <img src="assets/logo/eye.png" class="logo-img"/>
+            RoadSense
+        </a>
+            <ul class="nav-list">
+                <li><a href="#timeline-title">Risk Graph</a></li>
+                <li><a href="#map-title">Global Heatmap</a></li>
+                <li><a href="#civilian-summary-title">Summary View</a></li>
+            </ul>
+        </navbar>
+    </div>
+    <header>
+            <h1>Road<b>Sense</b></h1>
+            <h4 style="font-family: console-light;">Intelligent Traffic Risk & Priority Intelligence</h4>
+    </header>
+    <div class="content">
+        <div class="center-cont">
+            <div class="banner controls-banner">
+                <span style="background: none; width: 100%">
+                    <span class="dropdown-anchor">
+                        <button class="b_generic b_ZoneSelectorMaster">NA</button>
+                        <ul class="l_ZoneSelector l_generic"></ul>
+                    </span>
+                <b id="l_ZoneDetails">(<span class="l_ZoneDetails">NA</span>)</b>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span>
+                    <b id="l_WeekDetails">Week <span class="dropdown-anchor dropdown-anchor-inline"><button class="b_generic b_WeekSelectorMaster">-1</button><ul class="l_WeekSelector l_generic"></ul></span> of <span class="l_WeekCount">NA</span></b>
+                </span>
+            </span>
+        </div>
+            <div class="banner summary-banner" style="margin: 16px 0; padding: 6px;">
+                <div class="summary-banner-row">
+                    <h1 class="l_banner_title" style="margin :0 16px;">
+                        NA
+                    </h1>
+                    <span class="l_data_disp_additional_severity l_additional_data" style="margin :0 16px; padding: 0 2px;">HIGH</span>
+                </div>
+                <div class="l_data_disp_additional_descriptor" style="margin :0 16px; padding: 0 2px; font-family: console-light; color: #ffffff35">NA</div>
+            </div>
+            <div class="data_disp">
+                <span class="horizontal_stacker">
+                    <span style="width: 35%">
+                    <ul class="l_generic_nodrop l_data_disp active">
+                        <li class="l_data_disp_item_population l_data_disp_item">
+                            <span class="l_data_disp_item_population_title l_data_disp_item_header">Population Density</span>
+                            <span class="l_data_disp_item_population_value l_ZoneDetails l_data_disp_item_value">NA</span>
+
+                        </li>
+                        <li class="l_data_disp_item_predicted_risk l_data_disp_item">
+                            <span class="l_data_disp_item_predicted_risk_title l_data_disp_item_header">Predicted Risk  <span class="l_data_disp_additional_predicted_risk l_additional_data">HIGH</span></span>
+                            <span class="l_data_disp_item_predicted_risk_value l_ZoneDetails l_data_disp_item_value">NA</span>
+                        </li>
+                        
+                </ul>
+                </span>

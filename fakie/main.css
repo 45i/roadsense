@@ -217,44 +217,6 @@ html{
     vertical-align: middle;
 }
 
-.safety-context-dropdown{
-    /* margin-left: 8px; */
-}
-
-.b_SafetyContextSelector{
-    height: auto;
-    min-height: 28px;
-    margin: 0;
-    /* padding: 4px 10px; */
-    font-size: small;
-    /* font-weight: 600; */
-    border-radius: 6px;
-}
-.b_context_selector{
-    height: auto;
-    min-height: 28px;
-    margin: 0;
-    /* padding: 4px 10px; */
-    font-size: small;
-    /* font-weight: 600; */
-    border-radius: 6px;
-}
-.l_SafetyContextSelector{
-    /* min-width: 120px; */
-    backdrop-filter: blur(16px);
-    background: #0d1019 !important;
-}
-.li_scs{
-    height: small !important;
-    min-height: 0 !important;
-    margin:0 !important;
-}
-
-.safety-context-label{
-    display: inline-block;
-    vertical-align: middle;
-}
-
 .l_generic{
     list-style: none;
     display: flex;
@@ -563,28 +525,14 @@ html{
     font-size: 11px;
 }
 .map-legend i{
-    width: 16px;
-    height: 160px;
+    width: 14px;
+    height: 200px;
     display: inline-block;
-    background: linear-gradient(to top, #e74c3c, #f39c12, #f1c40f, #2ecc71);
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.22);
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
-}
-.map-legend-labels{
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    font-size: 10px;
-    color: #ffffff9a;
-    text-transform: lowercase;
-    letter-spacing: 0.04em;
+    background: linear-gradient(to top, #32005f, #3f63a9, #17a67b, #91d83d, #fff20b);
 }
 .map-legend span{ order: 1; }
 .map-legend i{ order: 2; }
-.map-legend-labels{ order: 3; }
-.map-legend b{ font-weight: 400; }
+.map-legend b{ order: 3; align-self: flex-end; font-weight: 400; }
 #risk-map{
     height: 620px;
     width: 100%;
@@ -738,20 +686,3 @@ html{
 .l_data_disp_additional_severity{
     min-width: 32px;    
 }
-.b_drop::after{
-    content: " ▼";
-    font-size: 10px;
-}
-.map-legend{
-    /* border: 2px solid red; */
-    border-radius: 4px;
-    background: #0d10194b;
-    backdrop-filter: blur(16px);
-    padding : 16px;
-}
-/* .risk-popup{
-    border-radius: 4px;
-    background: #0d10193b;
-    backdrop-filter: blur(16px);
-    padding: 8px 12px;
-} */

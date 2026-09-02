@@ -31,19 +31,22 @@
             <div class="banner controls-banner">
                 <span style="background: none; width: 100%">
                     <span class="dropdown-anchor">
-                        <button class="b_generic b_drop b_ZoneSelectorMaster">NA</button>
+                        <button class="b_generic b_ZoneSelectorMaster">NA</button>
                         <ul class="l_ZoneSelector l_generic"></ul>
                     </span>
                 <b id="l_ZoneDetails">(<span class="l_ZoneDetails">NA</span>)</b>
                 <span class="spacer"></span>
                 <span class="spacer"></span>
                 <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
+                <span class="spacer"></span>
                 <span>
-                    <b id="l_WeekDetails">Week <span class="b_generic b_WeekSelectorMaster">-1</span> of <span class="l_WeekCount">NA</span></b>
+                    <b id="l_WeekDetails">Week <span class="dropdown-anchor dropdown-anchor-inline"><button class="b_generic b_WeekSelectorMaster">-1</button><ul class="l_WeekSelector l_generic"></ul></span> of <span class="l_WeekCount">NA</span></b>
                 </span>
             </span>
         </div>
-            <!-- <div class="banner summary-banner" style="margin: 16px 0; padding: 6px;">
+            <div class="banner summary-banner" style="margin: 16px 0; padding: 6px;">
                 <div class="summary-banner-row">
                     <h1 class="l_banner_title" style="margin :0 16px;">
                         NA
@@ -51,54 +54,48 @@
                     <span class="l_data_disp_additional_severity l_additional_data" style="margin :0 16px; padding: 0 2px;">HIGH</span>
                 </div>
                 <div class="l_data_disp_additional_descriptor" style="margin :0 16px; padding: 0 2px; font-family: console-light; color: #ffffff35">NA</div>
-            </div> -->
+            </div>
             <div class="data_disp">
                 <span class="horizontal_stacker">
                     <span style="width: 35%">
                     <ul class="l_generic_nodrop l_data_disp active">
+                        <li class="l_data_disp_item_population l_data_disp_item">
+                            <span class="l_data_disp_item_population_title l_data_disp_item_header">Population Density</span>
+                            <span class="l_data_disp_item_population_value l_ZoneDetails l_data_disp_item_value">NA</span>
+
+                        </li>
                         <li class="l_data_disp_item_predicted_risk l_data_disp_item">
                             <span class="l_data_disp_item_predicted_risk_title l_data_disp_item_header">Predicted Risk  <span class="l_data_disp_additional_predicted_risk l_additional_data">HIGH</span></span>
-                            <span class="l_data_disp_item_predicted_risk_value l_ZoneDetails l_data_disp_item_value">NA </span>
+                            <span class="l_data_disp_item_predicted_risk_value l_ZoneDetails l_data_disp_item_value">NA</span>
                         </li>
-                        <li class="l_data_disp_item_risk_window l_data_disp_item " >
-                            <span class="l_data_disp_item_risk_window_title l_data_disp_item_header">Risk Windows</span>
-                            <span class="l_data_disp_item_risk_window_value l_ZoneDetails l_data_disp_item_value" style="font-size: small;">NA</span>
-        
-                        </li>
-                    </ul>
+                        
+                </ul>
                 </span>
-                <span style="width: 35%">
+                    <span style="width: 35%">
                     <ul class="l_generic_nodrop l_data_disp active">
-                        <li class="l_data_disp_item_prim_cause l_data_disp_item">
-                            <span class="l_data_disp_item_prim_cause_title l_data_disp_item_header">
-                                <span class="safety-context-label l_data_disp_item_header">Primary Risk Cause</span>
-                                <span class="dropdown-anchor dropdown-anchor-inline safety-context-dropdown">
-                                    <button class="b_generic b_SafetyContextSelector b_drop">General</button>
-                                    <ul class="l_generic l_SafetyContextSelector" style="li{padding: 0px;}">
-                                        <li class="li_scs"><button class="b_generic b_context_selector" type="button" data-safety-context="general">General</button></li>
-                                        <li class="li_scs"><button class="b_generic b_context_selector" type="button" data-safety-context="drivers">Drivers</button></li>
-                                        <li class="li_scs"><button class="b_generic b_context_selector" type="button" data-safety-context="pedestrians">Pedestrians</button></li>
-                                    </ul>
-                                </span>
-                            </span>
-                            <span class="l_data_disp_item_prim_cause_value l_ZoneDetails l_data_disp_item_value" style="font-size:small">NA</span>
-        
+                        <li class="l_data_disp_item_incident l_data_disp_item " >
+                            <span class="l_data_disp_item_incident_title l_data_disp_item_header">Incidents</span>
+                            <span class="l_data_disp_item_incident_value l_ZoneDetails l_data_disp_item_value">NA</span>
+
                         </li>
-                        
-                        
+                        <li class="l_data_disp_item_congestion l_data_disp_item" >
+                            <span class="l_data_disp_item_congestion_title l_data_disp_item_header">Congestion Index</span>
+                            <span class="l_data_disp_item_congestion_value l_ZoneDetails l_data_disp_item_value">NA</span>
+
+                        </li>
                 </ul>
                 </span>
                     
                     <span style="width: 35%">
                     <ul class="l_generic_nodrop l_data_disp active">
                         <li class="l_data_disp_item_traffic_prssure l_data_disp_item">
-                            <span class="l_data_disp_item_weather_title l_data_disp_item_header">Dominant Weather Condition</span>
-                            <span class="l_data_disp_item_weather_value l_ZoneDetails l_data_disp_item_value">NA</span>
+                            <span class="l_data_disp_item_traffic_prssure_title l_data_disp_item_header">Traffic Pressure</span>
+                            <span class="l_data_disp_item_traffic_prssure_value l_ZoneDetails l_data_disp_item_value">NA</span>
 
                         </li>
-                        <li class="l_data_disp_item_street_env l_data_disp_item" >
-                            <span class="l_data_disp_item_street_env_title l_data_disp_item_header">Street Environment</span>
-                            <span class="l_data_disp_item_street_env_value l_ZoneDetails l_data_disp_item_value" style="font-size: small">NA</span>
+                        <li class="l_data_disp_item_vehicle_density l_data_disp_item" >
+                            <span class="l_data_disp_item_vehicle_density_title l_data_disp_item_header">Vehicle Density</span>
+                            <span class="l_data_disp_item_vehicle_density_value l_ZoneDetails l_data_disp_item_value">NA</span>
 
                         </li>
                 </ul>
@@ -108,8 +105,8 @@
                     <div class="timeline-header">
                         <h2 id="timeline-title">52-Week Historical Trajectory</h2>
                         <div class="timeline-legend" aria-label="Chart legend">
-                            <!-- <span><i class="legend-line congestion-line"></i>Crashes (4W Avg)</span> -->
-                            <!-- <span><i class="legend-line speed-line"></i>Average Speed (km/h)</span> -->
+                            <span><i class="legend-line congestion-line"></i>Congestion Index (0-100)</span>
+                            <span><i class="legend-line speed-line"></i>Average Speed (km/h)</span>
                             <span><i class="legend-line risk-line"></i>Predicted Incident Risk (%)</span>
                         </div>
                     </div>
@@ -125,12 +122,12 @@
                             <thead>
                                 <tr>
                                     <th>Rank</th>
-                                    <th>zone id</th>
-                                    <th>location name</th>
+                                    <th>zone_id</th>
+                                    <th>location_name</th>
                                     <th>city</th>
-                                    <th>beat id</th>
-                                    <th>predicted risk</th>
-                                    <th>priority level</th>
+                                    <th>vehicle_density</th>
+                                    <th>congestion</th>
+                                    <th>incident_occurred</th>
                                 </tr>
                             </thead>
                             <tbody id="ranking-body">
@@ -142,18 +139,11 @@
                 <section class="map-panel" aria-labelledby="map-title">
                     <div class="map-header">
                         <h2 id="map-title">Geospatial Risk Radar - Week 1</h2>
-                        <div class="map-legend" aria-label="Risk level legend">
-                            <span>risk<br> low</span>
-                            <i aria-hidden="true"></i>
-                            <!-- <b>low</b> -->
-                            <div class="map-legend-labels">
-                                <b>critical</b>
-                            </div>
-                        </div>
+                        <div class="map-legend"><span>congestion</span><i></i><b>100</b></div>
                     </div>
-                    <div id="risk-map" aria-label="World map showing risk heatmap by zone"></div>
+                    <div id="risk-map" aria-label="World map showing congestion heatmap by zone"></div>
                 </section>
-                <!-- <section class="civilian-summary" aria-labelledby="civilian-summary-title">
+                <section class="civilian-summary" aria-labelledby="civilian-summary-title">
                     <div class="civilian-summary-header">
                         <h2 id="civilian-summary-title">Summary View</h2>
                         <span id="civilian-summary-period">Selected zone - Week 1</span>
@@ -204,7 +194,7 @@
                         <span class="summary-card-label">Recommended action</span>
                         <p id="summary-guidance-text">Loading guidance...</p>
                     </div>
-                </section> -->
+                </section>
             </div>  
         </div>
         

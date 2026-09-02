@@ -1,0 +1,134 @@
+@font-face{
+    src: url("assets/fonts/SFPRODISPLAYREGULAR.OTF");
+    font-family: st;
+}
+@font-face{
+    src: url("assets/fonts/JetBrainsMonoNL-Light.ttf");
+    font-family: console-light;
+}
+@font-face{
+    src: url("assets/fonts/JetBrainsMono-Bold.ttf");
+    font-family: console-bold;
+}
+*, body{
+font-family: st;
+background: #00000000;
+color: #fff;
+margin: 0;
+padding: 0;
+max-width: 100vw !important;
+user-select: none;
+/* width: 100vw !important; */
+    /* box-sizing: border-box; */
+
+}
+body{
+    background: #000;
+}
+html, body, * {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge legacy */
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+.nav-cont{
+    width: 100vw;
+    position: fixed;
+    left: 0;
+    top: 16px;
+    z-index: 9999;
+    background: #00000000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    height: max-content;
+}
+.navig{
+    width: 90%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    background: #00000000;
+    padding: 6px 6px;
+    border-radius: 16px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 2px solid #ffffff0a;
+    height: 36px;
+    .nav-list{
+        list-style: none;
+        display: flex;
+        right: 0;
+        position: fixed;
+        padding: 0 6px;
+        background: none;
+
+        li{
+            padding: 0 12px;
+            background: none;
+            button, a{
+                background: #5353531b;
+                border: 2px solid #ffffff1a;
+                border-radius: 8px;
+                color: #fff;
+                padding: 2px 6px;
+                font-family: st;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                text-decoration: none;
+            }
+        }
+    }
+}
+.logo-img{
+    width: 32px;
+    height: 32px;
+    background:none;
+    padding: 0px 6px;
+}
+.logo{
+    left: 0;
+    position: fixed;
+    background:none;
+    display: flex;
+    flex-direction: row;
+    align-items: center ;
+    font-weight: 1000;
+    color: #fff;
+    text-decoration: none;
+
+}
+header{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0) 75%,
+        rgba(0, 0, 0, 1) 100%
+    ), url("https://images.hindustantimes.com/auto/img/2023/03/16/1600x900/Traffic_jam_1678944991540_1678944991839_1678944991839.jpg");
+    h1, h6{
+        font-size:clamp(20px, 10vw, 90px);
+        /* font-weight: 1000; */
+    }
+    *{
+        background: none;
+    }
+}
