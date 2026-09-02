@@ -164,7 +164,7 @@ function loadRanking() {
             .then(response => response.ok ? response.json() : null)
             .catch(() => null);
     })).then(records => {
-        const ranking=records.filter(Boolean).sort((first, second) => Number(second.priority?.priority_score ?? second.raw_metrics?.priority_score ?? 0) - Number(first.priority?.priority_score ?? first.raw_metrics?.priority_score ?? 0));
+        const ranking=records.filter(Boolean).sort((first, second) => Number(second.priority?.priority_score ?? 0) - Number(first.priority?.priority_score ?? 0));
         rankingBody.replaceChildren();
         ranking.forEach((record, index) => {
             const metrics=record.raw_metrics || {};
@@ -284,7 +284,7 @@ function renderRiskMap(records) {
             fillOpacity:0.8,
             weight:2.5
         });
-        marker.bindPopup(`<div class="risk-popup"><strong>${zoneInfo.location_name} (${zoneInfo.zone_id})</strong><br>Risk level: ${riskDisplay}<br>Risk label: ${record?.risk_analysis?.risk_label || 'NA'}<br>Priority: ${record?.priority?.priority_level || 'NA'}<br>Coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}</div>`);
+        marker.bindPopup(`<div class="risk-popup"><span style="color:#000 !important">${zoneInfo.location_name} (${zoneInfo.zone_id})</span><br>Risk level: ${riskDisplay}<br>Risk label: ${record?.risk_analysis?.risk_label || 'NA'}<br>Priority: ${record?.priority?.priority_level || 'NA'}<br>Coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}</div>`);
         marker.addTo(riskLayer);
         points.push([latitude, longitude]);
     });
