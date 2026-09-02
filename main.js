@@ -234,24 +234,24 @@ function updateCivilianSummary(data) {
     const incidentText=metrics.incident_occurred ? 'At least one incident was recorded this week.' : 'No incident was recorded this week.';
     const guidance=[intervention.description, intervention.action].filter(Boolean).join(' ');
 
-    document.querySelector('#civilian-summary-period').textContent=`${metrics.location_name || data.location_name || zone} - Week ${metrics.week || data.week || week}`;
-    document.querySelector('#summary-risk').textContent=`${riskLabel} (${riskValue})`;
-    document.querySelector('#summary-risk-text').textContent=riskText;
-    document.querySelector('#summary-traffic').textContent=congestion;
-    document.querySelector('#summary-traffic-text').textContent=speed;
-    document.querySelector('#summary-incidents').textContent=incidents;
-    document.querySelector('#summary-incidents-text').textContent=incidentText;
-    document.querySelector('#summary-conditions').textContent=weather;
-    document.querySelector('#summary-conditions-text').textContent=roadCondition;
-    document.querySelector('#summary-speed').textContent=metrics.average_speed == null ? 'NA' : `${Number(metrics.average_speed).toFixed(1)} km/h`;
-    document.querySelector('#summary-speed-text').textContent=metrics.speed_change == null ? 'Typical speed in this zone' : `${Number(metrics.speed_change) >= 0 ? '+' : ''}${Number(metrics.speed_change).toFixed(1)} km/h versus the previous week`;
-    document.querySelector('#summary-road-load').textContent=roadLoad;
-    document.querySelector('#summary-road-load-text').textContent=metrics.traffic_pressure == null ? 'Road load unavailable' : 'Estimated share of road capacity in use';
-    document.querySelector('#summary-density').textContent=density;
-    document.querySelector('#summary-density-text').textContent=metrics.vehicle_density_pct_change == null ? 'Vehicles per kilometre' : `${Number(metrics.vehicle_density_pct_change) >= 0 ? '+' : ''}${Number(metrics.vehicle_density_pct_change).toFixed(1)}% versus the previous week`;
-    document.querySelector('#summary-capacity').textContent=capacity == null ? 'NA' : `${Number(capacity).toFixed(1)} lanes`;
-    document.querySelector('#summary-capacity-text').textContent='Effective available road capacity';
-    document.querySelector('#summary-guidance-text').textContent=guidance || 'No specific guidance is available for this week.';
+    // document.querySelector('#civilian-summary-period').textContent=`${metrics.location_name || data.location_name || zone} - Week ${metrics.week || data.week || week}`;
+    // // document.querySelector('#summary-risk').textContent=`${riskLabel} (${riskValue})`;
+    // document.querySelector('#summary-risk-text').textContent=riskText;
+    // document.querySelector('#summary-traffic').textContent=congestion;
+    // document.querySelector('#summary-traffic-text').textContent=speed;
+    // document.querySelector('#summary-incidents').textContent=incidents;
+    // document.querySelector('#summary-incidents-text').textContent=incidentText;
+    // document.querySelector('#summary-conditions').textContent=weather;
+    // document.querySelector('#summary-conditions-text').textContent=roadCondition;
+    // document.querySelector('#summary-speed').textContent=metrics.average_speed == null ? 'NA' : `${Number(metrics.average_speed).toFixed(1)} km/h`;
+    // document.querySelector('#summary-speed-text').textContent=metrics.speed_change == null ? 'Typical speed in this zone' : `${Number(metrics.speed_change) >= 0 ? '+' : ''}${Number(metrics.speed_change).toFixed(1)} km/h versus the previous week`;
+    // document.querySelector('#summary-road-load').textContent=roadLoad;
+    // document.querySelector('#summary-road-load-text').textContent=metrics.traffic_pressure == null ? 'Road load unavailable' : 'Estimated share of road capacity in use';
+    // document.querySelector('#summary-density').textContent=density;
+    // document.querySelector('#summary-density-text').textContent=metrics.vehicle_density_pct_change == null ? 'Vehicles per kilometre' : `${Number(metrics.vehicle_density_pct_change) >= 0 ? '+' : ''}${Number(metrics.vehicle_density_pct_change).toFixed(1)}% versus the previous week`;
+    // document.querySelector('#summary-capacity').textContent=capacity == null ? 'NA' : `${Number(capacity).toFixed(1)} lanes`;
+    // document.querySelector('#summary-capacity-text').textContent='Effective available road capacity';
+    // document.querySelector('#summary-guidance-text').textContent=guidance || 'No specific guidance is available for this week.';
 }
 
 function renderRiskMap(records) {
